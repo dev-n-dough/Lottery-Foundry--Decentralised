@@ -26,9 +26,9 @@ contract CreateSubscription is Script
         vm.startBroadcast();
         uint64 subId = VRFCoordinatorV2Mock(vrfCoordinator).createSubscription();
         vm.stopBroadcast();
-        console.log("Owner of subscription :" , msg.sender);
-        console.log("Address of this contract :" , address(this));
-        console.log("Address of vrfCoordinator" , vrfCoordinator);
+        // consozle.log("Owner of subscription :" , msg.sender);
+        // console.log("Address of this contract :" , address(this));
+        // console.log("Address of vrfCoordinator" , vrfCoordinator);
         console.log("Your sub ID is ",subId);
         return subId;
     }
@@ -58,14 +58,12 @@ contract FundSubscription is Script
         if(block.chainid == 31337)
         {
             vm.startBroadcast();
-            // uint64 subId = VRFCoordinatorV2Mock(vrfCoordinator).createSubscription(); // i have changed this(keep in mind)
             VRFCoordinatorV2Mock(vrfCoordinator).fundSubscription(subId,FUND_AMOUNT);
             vm.stopBroadcast();
         }
         else
         {
             vm.startBroadcast();
-            uint64 subId = VRFCoordinatorV2Mock(vrfCoordinator).createSubscription();
             LinkToken(link).transferAndCall(vrfCoordinator, FUND_AMOUNT , abi.encode(subId));
             vm.stopBroadcast();
         }
@@ -84,12 +82,11 @@ contract AddConsumer is Script
 {
     function addConsumer(address raffle , address vrfCoordinator , uint64 subId) public
     {
-        console.log("Adding consumer contract ", raffle);
-        console.log("Using VRFCoordinator ", vrfCoordinator);
+        // console.log("Adding consumer contract ", raffle);
+        // console.log("Using VRFCoordinator ", vrfCoordinator);
         console.log("On chain " , block.chainid);
-        console.log("msg.sender" , msg.sender);
+        // console.log("msg.sender" , msg.sender);
         vm.startBroadcast();
-        // uint64 subId = VRFCoordinatorV2Mock(vrfCoordinator).createSubscription();
         VRFCoordinatorV2Mock(vrfCoordinator).addConsumer(subId, raffle);
         vm.stopBroadcast();
     }

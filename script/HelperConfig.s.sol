@@ -7,6 +7,9 @@ import {Raffle} from "../src/Raffle.sol";
 import {VRFCoordinatorV2Mock} from "../lib/chainlink-brownie-contracts/contracts/src/v0.8/mocks/VRFCoordinatorV2Mock.sol";
 import {LinkToken} from "../test/mocks/LinkToken.sol";
 
+// import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+
 contract HelperConfig is Script
 {
     struct NetworkConfig {
@@ -40,7 +43,7 @@ contract HelperConfig is Script
             interval : 30 , // in seconds
             vrfCoordinator : 0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625 ,
             gasLane : 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c ,
-            subscriptionId : 11988 , // update it later ! - done !!
+            subscriptionId : 0 , // update it later ! - dont , let the script do it
             callbackGasLimit : 500000 , // 500,000 gas !
             link: 0x779877A7B0D9E8603169DdbD7836e478b4624789
         });
@@ -66,7 +69,7 @@ contract HelperConfig is Script
             interval : 30 ,
             vrfCoordinator : address(vrfCoordinatorMock) ,
             gasLane : 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c , // same as sepolia,
-            subscriptionId : 1 , // update it later ! - done!!
+            subscriptionId : 0 , // update it later ! dont , let the script do it
             callbackGasLimit : 500000,
             link : address(linkToken)
         });
