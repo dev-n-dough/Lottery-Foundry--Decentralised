@@ -29,7 +29,7 @@ pragma solidity ^0.8.18;
  * @notice This is a sample raffling contract
  * @dev Implements Chainlink VRFv2
  */
-
+    
 import {VRFCoordinatorV2Interface} from "@chainlink/contracts/src/v0.8/vrf/interfaces/VRFCoordinatorV2Interface.sol";
 import {VRFConsumerBaseV2} from "@chainlink/contracts/src/v0.8/vrf/VRFConsumerBaseV2.sol";
 import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/interfaces/AutomationCompatibleInterface.sol";
@@ -68,6 +68,7 @@ contract Raffle is VRFConsumerBaseV2,AutomationCompatibleInterface
 
     event enteredRaffle(address indexed player);
     event PickedWinner(address indexed winner);
+    event WinnerRequested(uint256 indexed reqId);
 
     constructor(uint256 entranceFee , uint256 interval , address vrfCoordinator , bytes32 gasLane , uint64 subscriptionId , uint32 callbackGasLimit) VRFConsumerBaseV2(vrfCoordinator)
     {
@@ -123,21 +124,19 @@ contract Raffle is VRFConsumerBaseV2,AutomationCompatibleInterface
         {
             revert Raffle__UpkeepNotNeeded(address(this).balance , s_players.length , uint256(s_raffleState));
         }
-        if(block.timestamp - s_lastTimestamp < i_interval)
-        {
-            revert();
-        }
         s_raffleState = RaffleState.CALCULATING;
         console.log("msg.sender " , msg.sender);
         console.log("subId" , i_subscriptionId);
         
-        i_vrfCoordinator.requestRandomWords(
+        uint256 requestId = i_vrfCoordinator.requestRandomWords(
             i_gasLane,
             i_subscriptionId,
             REQUEST_CONFIRMATIONS,
             i_callbackGasLimit,
             NUM_WORDS
         );
+
+        emit WinnerRequested(requestId);
     }
     // CEI : checks , effects , interactions
     function fulfillRandomWords(uint256 /*requestId*/ , uint256[] memory randomWords) internal override
@@ -172,6 +171,18 @@ contract Raffle is VRFConsumerBaseV2,AutomationCompatibleInterface
     function getPlayer(uint256 index) external view returns(address)
     {
         return s_players[index];
+    }
+    function getRecentWinner() external view returns(address)
+    {
+        return s_recentWinner;
+    }
+    function getNumberOfPlayers() external view returns(uint256)
+    {
+        return s_players.length;
+    }
+    function getLastTimestamp() external view returns(uint256)
+    {
+        return s_lastTimestamp;
     }
 }
 // option + arrow keys to move whole lines without selecting
